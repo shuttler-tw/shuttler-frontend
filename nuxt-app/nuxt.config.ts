@@ -2,17 +2,18 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@pinia/nuxt', '@element-plus/nuxt'],
-  css: ['~/assets/css/main.css'],
+  modules: ["@nuxt/eslint", "@pinia/nuxt", "@element-plus/nuxt"],
+  typescript: {
+    typeCheck: true,
+  },
+  css: ["~/assets/css/main.css"],
   elementPlus: {
     importStyle: "scss",
   },
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
     css: {
       preprocessorOptions: {
         scss: {
@@ -21,4 +22,4 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
