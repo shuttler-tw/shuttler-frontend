@@ -9,3 +9,15 @@
   --color-info: var(--el-color-info);
   --color-danger: var(--el-color-danger);
 }
+
+@utility container {
+  padding-inline: 10px;
+  margin-inline: auto;
+  @variant sm {
+    padding-inline: 20px;
+  }
+
+  @variant lg {
+    padding-inline: 80px;
+  }
+}
