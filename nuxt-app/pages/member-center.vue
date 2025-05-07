@@ -22,6 +22,7 @@
           <el-avatar
             :size="80"
             :src="memberInfo.avatar || defaultAvatar"
+
           />
           <p class="font-bold py-3">{{ memberInfo.name }}</p>
           <p class="flex justify-center items-center">

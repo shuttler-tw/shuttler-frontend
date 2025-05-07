@@ -25,7 +25,7 @@
     attendCount: 12
   });
   initLocationByZip(memberInfo.value.preferredLocation[0]);
-
+  
   const memberInfoFormRules = ref<FormRules<MemberInfo>>({
     name: [
       { required: true, message: "請輸入名稱", trigger: "blur" },
@@ -70,7 +70,6 @@
       label-position="top"
       label-width="auto"
       class="w-full xl:w-1/3"
-      :model="memberInfo"
       :rules="memberInfoFormRules"
     >
       <el-form-item
