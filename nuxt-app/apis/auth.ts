@@ -28,5 +28,31 @@ export const emailSignUp = (signUpData: {
   password: string;
   name: string;
 }) => {
-  return useShuttlerTwAPI.post("/auth/signup", signUpData, { watch: false });
+  return useShuttlerTwAPI.post<{
+    data: {
+      token: string;
+      user: {
+        id: string;
+        email: string;
+        name: string;
+      };
+    };
+    message: string;
+  }>("/auth/signup", signUpData, { watch: false });
+};
+
+export const getUserInfo = () => {
+  return useShuttlerTwAPI.get<{
+    data: {
+      name: string;
+      email: string;
+      avatar: string | null;
+      preferredLocation: string[];
+      registerDate: string;
+      level: string[];
+      totalPoints: number;
+      attendCount: number;
+    };
+    message: string;
+  }>("/user/profile", { watch: false });
 };
