@@ -68,18 +68,25 @@ const handleEmailSignUp = async () => {
 };
 
 const handleEmailLogin = async () => {
-  const { token } = await nuxtEmailLogin({
-    email: form.value.email,
-    password: form.value.password,
-  });
-  await refreshSession();
-  if (token) {
-    ElMessage({
-      message: `歡迎 ${user.value?.name}`,
-      type: "success",
+  try {
+    const { token } = await nuxtEmailLogin({
+      email: form.value.email,
+      password: form.value.password,
     });
-    authStore.setToken(token);
-    emit("update:visible", false);
+    await refreshSession();
+    if (token) {
+      ElMessage({
+        message: `歡迎 ${user.value?.name}`,
+        type: "success",
+      });
+      authStore.setToken(token);
+      emit("update:visible", false);
+    }
+  } catch (error) {
+    ElMessage({
+      message: "登入失敗，請檢查帳號或密碼",
+      type: "error",
+    });
   }
 };
 </script>
