@@ -1,16 +1,18 @@
+@use './custom.scss' as custom;
+
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (
     'primary': (
-      'base': #efe40e,
+      'base': #F8F27D,
     ),
     'success': (
-      'base': #67C23A,
+      'base': #388E3C,
     ),
     'warning': (
-      'base': #F7BA2A,
+      'base': #EFE40E,
     ),
     'danger': (
-      'base': #B71C1C,
+      'base': #EB5756,
     ),
     'info': (
       'base':#273896,

@@ -4,6 +4,11 @@
   --color-black: var(--el-color-black);
   --color-white: var(--el-color-white);
   --color-primary: var(--el-color-primary);
+  --color-primary-light: var(--el-color-primary-light);
+  --color-primary-dark: var(--el-color-primary-dark);
+  --color-primary-accent: var(--el-color-primary-accent);
+  --color-primary-accent-light: var(--el-color-primary-accent-light);
+  --color-primary-accent-lighter: var(--el-color-primary-accent-lighter);
   --color-success: var(--el-color-success);
   --color-warning: var(--el-color-warning);
   --color-info: var(--el-color-info);

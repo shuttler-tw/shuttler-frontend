@@ -22,7 +22,7 @@
         </NuxtLink>
         <ElButton
           type="primary"
-          class="text-black rounded-2xl"
+          class="rounded-2xl"
           @click="
             authStore.isAuthenticated
               ? authStore.clearToken()

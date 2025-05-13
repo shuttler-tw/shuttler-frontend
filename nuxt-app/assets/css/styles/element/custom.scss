@@ -1,0 +1,21 @@
+:root {
+  --el-color-primary-light: #FDFDE8;
+  --el-color-primary-dark: #EFE40E;
+  --el-color-primary-accent: #EB5756;
+  --el-color-primary-accent-light: #F98770;
+  --el-color-primary-accent-lighter: #FBDDDD;
+}
+
+.el-button--primary {
+  --el-button-text-color: var(--el-color-black);
+  --el-button-hover-text-color: var(--el-color-white);
+  --el-button-hover-link-text-color: var(--el-color-primary-light-5);
+  --el-button-hover-bg-color: var(--el-color-primary-accent);
+  --el-button-hover-border-color: var(--el-color-primary-accent);
+  --el-button-active-text-color: var(--el-color-black);
+  --el-button-active-bg-color: var(--el-color-primary-dark);
+  --el-button-active-border-color: var(--el-color-primary-dark);
+  --el-button-disabled-text-color: var(--el-color-black);
+  --el-button-disabled-bg-color: var(--el-color-primary-light-5);
+  --el-button-disabled-border-color: var(--el-color-primary-light-5);
+}
