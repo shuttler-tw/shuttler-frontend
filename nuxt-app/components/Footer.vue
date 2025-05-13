@@ -4,13 +4,11 @@
 
 <template>
   <footer class="bg-[#fdfde8] py-6">
-    <div class="container mx-auto px-8 flex flex-wrap justify-between items-center">
-        <!-- 左邊：Logo -->
+    <div class="w-[1296px] mx-auto h-[159px] flex flex-wrap justify-between items-center pb-6">
         <div class="flex items-center space-x-2 w-[194px] h-[53px]">
           <img src="#" alt="Logo" class="h-8" />
           <span class="text-lg font-semibold text-red-600">羽神同行</span>
         </div>
-
 
         <!-- 中間區塊 -->
         <div class="w-[306px] h-[135px] flex flex-col text-sm text-gray-700">
