@@ -19,3 +19,13 @@
   --el-button-disabled-bg-color: var(--el-color-primary-light-5);
   --el-button-disabled-border-color: var(--el-color-primary-light-5);
 }
+
+.el-tabs__item {
+  &:hover {
+    color: var(--el-color-primary-accent);
+  }
+  &.is-active {
+    color: var(--el-color-black);
+    font-weight: 700;
+  }
+}
