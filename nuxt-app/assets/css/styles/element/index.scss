@@ -1,24 +1,22 @@
-@use './custom.scss' as custom;
-
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
   $colors: (
-    'primary': (
-      'base': #F8F27D,
+    "primary": (
+      "base": #f8f27d
     ),
-    'success': (
-      'base': #388E3C,
+    "success": (
+      "base": #4caf50
     ),
-    'warning': (
-      'base': #EFE40E,
+    "warning": (
+      "base": #efe40e
     ),
-    'danger': (
-      'base': #EB5756,
+    "danger": (
+      "base": #e57373
     ),
-    'info': (
-      'base':#273896,
-    ),
+    "info": (
+      "base": #273896
+    )
   ),
   $font-family: (
-    '': "'Roboto', 'Noto Sans', sans-serif"
+    "": "'Roboto', 'Noto Sans', sans-serif"
   )
 );
