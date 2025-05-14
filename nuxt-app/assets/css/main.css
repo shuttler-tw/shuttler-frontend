@@ -31,6 +31,8 @@
 
   --color-black: var(--el-color-black);
   --color-white: var(--el-color-white);
+
+  --breakpoint-3xl: 1920px
 }
 
 @utility container {
