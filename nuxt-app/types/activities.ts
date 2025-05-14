@@ -1,7 +1,7 @@
 export interface Activity {
   activityId: string;
   name: string;
-  contactAvator: string;
+  contactAvatar: string;
   venueName: string;
   date: string;
   startTime: string;

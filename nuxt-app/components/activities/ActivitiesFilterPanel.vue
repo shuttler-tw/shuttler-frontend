@@ -39,7 +39,7 @@
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4">
+  <div class="flex flex-col gap-4">
     <div class="flex items-center">
       <el-input
         v-model="activitiesFilter.venueName"

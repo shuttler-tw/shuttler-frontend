@@ -32,20 +32,12 @@
   --color-black: var(--el-color-black);
   --color-white: var(--el-color-white);
 
-  --breakpoint-3xl: 1920px
+  --breakpoint-3xl: 1920px;
 }
 
 @utility container {
-  padding-inline: 10px;
+  padding-inline: 12px;
   margin-inline: auto;
-
-  @variant sm {
-    padding-inline: 20px;
-  }
-
-  @variant lg {
-    padding-inline: 80px;
-  }
 }
 
 @layer base {
