@@ -21,7 +21,7 @@
         <ActivitiesFilterPanel class="col-span-12 xl:col-span-3" />
         <div class="col-span-12 xl:col-span-9">
           <ul class="grid grid-col-1 xl:grid-cols-3 gap-6">
-            <li v-for="activity in activities?.data" :key="activity.activityId" class="p-4 border rounded-lg" :class="`border-${useParticipantStatus(activity.bookedCount, activity.participantCount)}`">
+            <li v-for="activity in activities?.data" :key="activity.activityId" class="p-4 border rounded-lg" :class="`${useParticipantStatus('border', activity.bookedCount, activity.participantCount)}`">
               <div class="flex items-center mb-2">
                 <el-avatar class="mr-2" :size="40" :src="activity.contactAvatar" />
                 <h3 class="text-xl">{{ activity.name }}</h3>
@@ -46,7 +46,7 @@
                     </el-check-tag>
                   </li>
                 </ul>
-                <el-check-tag checked class="text-black font-bold" :class="`bg-${useParticipantStatus(activity.bookedCount, activity.participantCount)}`">
+                <el-check-tag checked class="text-black font-bold" :class="`${useParticipantStatus('bg', activity.bookedCount, activity.participantCount)}`">
                   {{ activity.bookedCount }}/{{ activity.participantCount }}
                 </el-check-tag>
               </div>
