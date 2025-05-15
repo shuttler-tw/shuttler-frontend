@@ -1,16 +1,15 @@
 const participantStatus = {
   border: {
-    danger: 'border-danger-light',
-    warning: 'border-warning',
-    success: 'border-success-light',
+    danger: "border-danger-light",
+    warning: "border-warning",
+    success: "border-success-light"
   },
   bg: {
-    success: 'bg-success-light',
-    warning: 'bg-warning',
-    danger: 'bg-danger-light',
+    success: "bg-success-light",
+    warning: "bg-warning",
+    danger: "bg-danger-light"
   }
-}
-
+};
 
 export function useParticipantStatus(
   className: keyof typeof participantStatus,

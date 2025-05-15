@@ -25,4 +25,3 @@ export const getElementPlusTypeByLevel = (levelString: string) => {
       return "danger";
   }
 };
-
