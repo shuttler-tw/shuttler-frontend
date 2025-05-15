@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import ActivitiesFilterPanel from "~/components/activities/ActivitiesFilterPanel.vue";
+  import ActivitiesNearDatePicker from "~/components/activities/ActivitiesNearDatePicker.vue";
   import { getActivities } from "@/apis/activities";
   import { Location, Clock, Money } from "@element-plus/icons-vue";
   import { getElementPlusTypeByLevel } from "@/constants/shuttlerLevels";
@@ -20,6 +21,7 @@
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
         <ActivitiesFilterPanel class="col-span-12 xl:col-span-3" />
         <div class="col-span-12 xl:col-span-9">
+          <ActivitiesNearDatePicker class="mb-6"/>
           <ul class="grid grid-col-1 xl:grid-cols-3 gap-6">
             <li v-for="activity in activities?.data" :key="activity.activityId" class="p-4 border rounded-lg" :class="`${useParticipantStatus('border', activity.bookedCount, activity.participantCount)}`">
               <div class="flex items-center mb-2">
