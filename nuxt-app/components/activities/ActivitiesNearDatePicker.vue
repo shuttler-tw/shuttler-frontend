@@ -36,7 +36,7 @@
   <div class="flex items-center">
     <el-button
       size="large"
-      class="text-2xl font-bold py-7 bg-gray-100 border-gray-200 rounded-r-none rounded-l-2xl hover:text-primary-dark"
+      class="text-2xl font-bold py-7 bg-gray-100 border-gray-200 rounded-r-none rounded-l-2xl hover:text-primary-accent-dark"
       :icon="ArrowLeft"
       @click="handleScrollValue(scrollLeftValue - 350)"
     />
@@ -49,7 +49,7 @@
         <el-button
           v-for="item in getDateOptions()"
           :key="item.value"
-          class="mx-1.5 w-full rounded-3xl text-black border-0 bg-transparent hover:bg-primary-dark"
+          class="mx-1.5 w-full rounded-3xl text-black border-0 bg-transparent hover:bg-primary-accent-dark"
         >
           {{ item.label }}
         </el-button>
@@ -57,7 +57,7 @@
     </el-scrollbar>
     <el-button
       size="large"
-      class="text-2xl font-bold py-7 bg-gray-100 border-gray-200 rounded-l-none rounded-r-2xl hover:text-primary-dark"
+      class="text-2xl font-bold py-7 bg-gray-100 border-gray-200 rounded-l-none rounded-r-2xl hover:text-primary-accent-dark"
       :icon="ArrowRight"
       @click="handleScrollValue(scrollLeftValue + 350)"
     />

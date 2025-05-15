@@ -3,13 +3,13 @@
 @theme {
   --font-sans: var(--el-font-family);
 
-  --color-primary-light: #fdfde8;
+  --color-primary-lighter: #fbdddd;
+  --color-primary-light: #f98770;
   --color-primary: var(--el-color-primary);
-  --color-primary-dark: #efe40e;
 
-  --color-primary-accent-lighter: #fbdddd;
-  --color-primary-accent-light: #f98770;
-  --color-primary-accent: #eb5756;
+  --color-primary-accent-lighter: #fdfde8;
+  --color-primary-accent: #f8f27d;
+  --color-primary-accent-dark: #efe40e;
 
   --color-success-lighter: #c8e6c9;
   --color-success-light: #81c784;
