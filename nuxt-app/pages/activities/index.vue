@@ -2,11 +2,15 @@
   import ActivitiesFilterPanel from "~/components/activities/ActivitiesFilterPanel.vue";
   import ActivitiesNearDatePicker from "~/components/activities/ActivitiesNearDatePicker.vue";
   import { getActivities } from "@/apis/activities";
-  import { Location, Clock, Money } from "@element-plus/icons-vue";
+  import { Location, Clock, Money, TopRight } from "@element-plus/icons-vue";
   import { getElementPlusTypeByLevel } from "@/constants/shuttlerLevels";
   import { useParticipantStatus } from "@/composables/useParticipantStatus";
 
   const { data: activities } = await getActivities();
+  const router = useRouter();
+  const pushTo = (activityId: string) => {
+    router.push(`/activities/${activityId}`);
+  };
 </script>
 <template>
   <div class="py-20">
@@ -26,8 +30,9 @@
             <li
               v-for="activity in activities?.data"
               :key="activity.activityId"
-              class="p-4 border rounded-lg"
+              class="relative group p-4 border rounded-lg"
               :class="`${useParticipantStatus('border', activity.bookedCount, activity.participantCount)}`"
+              @click="pushTo(activity.activityId)"
             >
               <div class="flex items-center mb-2">
                 <el-avatar
@@ -88,6 +93,8 @@
                   {{ activity.bookedCount }}/{{ activity.participantCount }}
                 </el-check-tag>
               </div>
+              <div class="absolute -top-0.25 -left-0.25 -bottom-0.25 -right-0.25 border border-gray-500 bg-gray-500 opacity-20 rounded-lg hidden group-hover:block group-hover:cursor-pointer"></div>
+              <el-button class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black hidden group-hover:block" :icon="TopRight" circle />
             </li>
           </ul>
         </div>
