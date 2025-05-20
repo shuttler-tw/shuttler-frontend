@@ -36,8 +36,8 @@
 }
 
 @utility container {
-  padding-inline: 12px;
-  margin-inline: auto;
+  max-width: 81rem;
+  @apply px-3 xl:px-0 mx-auto;
 }
 
 @layer base {
