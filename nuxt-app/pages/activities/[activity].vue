@@ -3,7 +3,18 @@
   import { activityPictures as defaultActivityPictures } from "~/constants/activityPictures";
   import ActivityPictures from "~/components/activity/ActivityPictures.vue";
   import { useParticipantStatus } from "@/composables/useParticipantStatus";
-  import { Postcard, Calendar, Location, School, Help, Odometer, User, Place, Tickets, Money } from "@element-plus/icons-vue";
+  import {
+    Postcard,
+    Calendar,
+    Location,
+    School,
+    Help,
+    Odometer,
+    User,
+    Place,
+    Tickets,
+    Money
+  } from "@element-plus/icons-vue";
 
   const router = useRoute();
   const activityId = router.params.activity as string;
@@ -21,60 +32,63 @@
     return [
       {
         icon: Postcard,
-        label: '主辦單位',
+        label: "主辦單位",
         value: activity.value.organizer
       },
       {
         icon: Calendar,
-        label: '活動日期',
+        label: "活動日期",
         value: `${activity.value.date} ${activity.value.startTime} - ${activity.value.endTime}`
       },
       {
         icon: Postcard,
-        label: '場館名稱',
+        label: "場館名稱",
         value: activity.value.venueName
       },
       {
         icon: Location,
-        label: '場館地點',
+        label: "場館地點",
         value: `${activity.value.city}${activity.value.district}${activity.value.address}`
       },
       {
         icon: School,
-        label: '場館設施',
+        label: "場館設施",
         value: activity.value.venueFacilities?.join("、")
       },
       {
         icon: Help,
-        label: '使用球種',
+        label: "使用球種",
         value: activity.value.ballType
       },
       // 程度
       {
         icon: Odometer,
-        label: '活動程度',
+        label: "活動程度",
         value: activity.value.level
       },
       {
         icon: User,
-        label: '活動名額',
+        label: "活動名額",
         value: `${activity.value.participantCount} 人`
       },
       {
         icon: Place,
-        label: '租用場地',
+        label: "租用場地",
         value: `${activity.value.rentalLot} 面`
       },
       {
         icon: Tickets,
-        label: '活動簡介',
+        label: "活動簡介",
         value: activity.value.brief
       }
     ];
   });
 </script>
 <template>
-  <div v-if="activity?.activityId" class="py-20">
+  <div
+    v-if="activity?.activityId"
+    class="py-20"
+  >
     <div class="flex flex-col items-center mb-10">
       <h2 class="mb-6">羽神報名去</h2>
       <el-breadcrumb separator="/">
@@ -86,10 +100,15 @@
       </el-breadcrumb>
     </div>
     <div class="container">
-      <ActivityPictures :pictures="pictures" class="mb-20" />
+      <ActivityPictures
+        :pictures="pictures"
+        class="mb-20"
+      />
       <div class="grid grid-col-1 lg:grid-cols-12 gap-6 pt-10">
         <section class="lg:col-span-9">
-          <h3 class="text-4xl flex items-center pb-7 mb-7 border-b border-gray-200">
+          <h3
+            class="text-4xl flex items-center pb-7 mb-7 border-b border-gray-200"
+          >
             <el-avatar
               class="mr-2"
               :size="40"
@@ -103,12 +122,18 @@
               :key="index"
               class="flex items-center mb-2"
             >
-              <el-icon class="mr-2" size="16">
+              <el-icon
+                class="mr-2"
+                size="16"
+              >
                 <component :is="item.icon" />
               </el-icon>
               {{ item.label }}：
               <span v-if="item.label !== '活動程度'">{{ item.value }}</span>
-              <ActivityElTags v-else :level="[...item.value]" />
+              <ActivityElTags
+                v-else
+                :level="[...item.value]"
+              />
             </li>
           </ul>
         </section>

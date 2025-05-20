@@ -3,7 +3,6 @@
   import ActivitiesNearDatePicker from "~/components/activities/ActivitiesNearDatePicker.vue";
   import { getActivities } from "@/apis/activities";
   import { Location, Clock, Money, TopRight } from "@element-plus/icons-vue";
-  import { getElementPlusTypeByLevel } from "@/constants/shuttlerLevels";
   import { useParticipantStatus } from "@/composables/useParticipantStatus";
 
   const { data: activities } = await getActivities();
@@ -81,8 +80,14 @@
                   {{ activity.bookedCount }}/{{ activity.participantCount }} 人
                 </el-tag>
               </div>
-              <div class="absolute -top-0.25 -left-0.25 -bottom-0.25 -right-0.25 border border-gray-500 bg-gray-500 opacity-20 rounded-lg hidden group-hover:block group-hover:cursor-pointer"></div>
-              <el-button class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black hidden group-hover:block" :icon="TopRight" circle />
+              <div
+                class="absolute -top-0.25 -left-0.25 -bottom-0.25 -right-0.25 border border-gray-500 bg-gray-500 opacity-20 rounded-lg hidden group-hover:block group-hover:cursor-pointer"
+              />
+              <el-button
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black hidden group-hover:block"
+                :icon="TopRight"
+                circle
+              />
             </li>
           </ul>
         </div>

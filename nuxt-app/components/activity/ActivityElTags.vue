@@ -1,12 +1,11 @@
-
 <script setup lang="ts">
   import { getElementPlusTypeByLevel } from "@/constants/shuttlerLevels";
 
   const props = defineProps({
     level: {
       type: Array as PropType<string[]>,
-      required: true,
-    },
+      required: true
+    }
   });
 </script>
 
