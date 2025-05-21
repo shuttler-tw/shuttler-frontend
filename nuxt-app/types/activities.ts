@@ -30,5 +30,5 @@ export interface ActivityDetail extends Activity {
 
 export type CreateActivityPayload = Omit<
   ActivityDetail,
-  "activityId" | "organizer" | "isFav" | "contactAvatar" | "bookedCount"
+  "activityId" | "isFav" | "contactAvatar" | "bookedCount"
 >;
