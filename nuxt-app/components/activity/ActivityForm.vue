@@ -2,9 +2,7 @@
   import type {
     FormInstance,
     FormRules,
-    UploadProps,
-    UploadUserFile,
-    UploadInstance
+    UploadFiles
   } from "element-plus";
   import type {
     ActivityDetail,
@@ -21,6 +19,7 @@
   type ActivityAction = "save" | "publish" | "update";
 
   const props = defineProps<ActivityForm>();
+  const runtimeConfig = useRuntimeConfig();
 
   const activityEditInfo = computed(() => {
     return props.activityEditInfo;
@@ -126,31 +125,46 @@
   const processActivityAction = (action: ActivityAction) => {
     switch (action) {
       case "save":
-        // Save activity logic
+        ElMessage.success("已成功儲存");
         break;
       case "publish":
-        // Publish activity logic
+        console.log(activityInfo.value);
+        ElMessage.success("已成功提交");
         break;
       case "update":
-        // Update activity logic
+        ElMessage.success("已成功修改");
         break;
     }
   };
 
-  const elementPlusPictureList = ref<UploadUserFile[]>([]);
+  const uploadImageFiles = ref<UploadFiles>([]);
 
-  const uploadImageRef = ref<UploadInstance>();
 
-  const handleExceed = () => {
-    ElMessage({
-      message: `最多只能上傳 5 張圖片`,
-      type: "warning"
+  const handleChange = (uploadFiles: UploadFiles) => {
+    uploadImageFiles.value = uploadFiles;
+  };
+
+  const handleUploadImages = async () => {
+    const formData = new FormData();
+    formData.append("uploadType", "activity");
+    uploadImageFiles.value.forEach((file) => {
+      if (file.raw) {
+        formData.append("file", file.raw);
+      }
     });
-  };
-
-  const handleChange: UploadProps["onChange"] = (uploadFile, uploadFiles) => {
-    console.log(uploadFile, uploadFiles);
-  };
+    const { data, error } = await useFetch<{message: string, data: { photo: string[] }}>(`${runtimeConfig.public.API_BASE_URL}/upload-image`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Authorization": `Bearer ${useCookie("token").value}`
+      }
+    });
+    if (error.value) {
+      ElMessage.error("圖片上傳失敗，請稍後再試");
+      return Promise.reject("圖片上傳失敗，請稍後再試");
+    }
+    if (data.value?.data.photo) activityInfo.value.pictures = data.value?.data.photo
+  }
 
   const submitForm = async (
     formEl: FormInstance | undefined,
@@ -159,17 +173,10 @@
     if (!formEl) return;
     await formEl.validate(async (valid, _fields) => {
       if (valid) {
-        console.log(uploadImageRef.value);
+        if (uploadImageFiles.value.length > 0) await handleUploadImages();
         await processActivityAction(action);
-        ElMessage({
-          message: "已成功提交",
-          type: "error"
-        });
       } else {
-        ElMessage({
-          message: "提交資料有錯誤喔! 請檢查後再送出",
-          type: "error"
-        });
+        ElMessage.error("提交資料有錯誤喔! 請檢查後再送出");
       }
     });
   };
@@ -207,33 +214,7 @@
       prop=""
       class="lg:col-span-6"
     >
-      <el-upload
-        ref="uploadImageRef"
-        v-model:file-list="elementPlusPictureList"
-        class="w-full"
-        action="#"
-        multiple
-        list-type="picture"
-        :limit="5"
-        :on-exceed="handleExceed"
-        :on-change="handleChange"
-        :auto-upload="false"
-      >
-        <el-button
-          type="primary"
-          :disabled="elementPlusPictureList.length === 5"
-          round
-        >
-          {{
-            elementPlusPictureList.length === 5
-              ? "已達圖片上限"
-              : "選擇活動圖片"
-          }}
-        </el-button>
-        <template #tip>
-          <div class="el-upload__tip">最多五張</div>
-        </template>
-      </el-upload>
+      <ActivityElUploadImage @onChange="handleChange" />
     </el-form-item>
     <el-form-item
       label="活動日期"
@@ -521,7 +502,7 @@
             size="large"
             class="w-full mr-3 border-2 border-gray-300 text-gray-400"
             round
-            @click="submitForm(activityInfoFormRef, 'save')"
+            @click="handleUploadImages"
           >
             儲存
           </el-button>
