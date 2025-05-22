@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-  import type { FormInstance, FormRules } from "element-plus";
+  import type {
+    FormInstance,
+    FormRules,
+    UploadProps,
+    UploadUserFile,
+    UploadInstance
+  } from "element-plus";
   import type {
     ActivityDetail,
     CreateActivityPayload
@@ -131,6 +137,21 @@
     }
   };
 
+  const elementPlusPictureList = ref<UploadUserFile[]>([]);
+
+  const uploadImageRef = ref<UploadInstance>();
+
+  const handleExceed = () => {
+    ElMessage({
+      message: `最多只能上傳 5 張圖片`,
+      type: "warning"
+    });
+  };
+
+  const handleChange: UploadProps["onChange"] = (uploadFile, uploadFiles) => {
+    console.log(uploadFile, uploadFiles);
+  };
+
   const submitForm = async (
     formEl: FormInstance | undefined,
     action: ActivityAction
@@ -138,6 +159,7 @@
     if (!formEl) return;
     await formEl.validate(async (valid, _fields) => {
       if (valid) {
+        console.log(uploadImageRef.value);
         await processActivityAction(action);
         ElMessage({
           message: "已成功提交",
@@ -179,6 +201,39 @@
         size="large"
         placeholder="請輸入活動名稱"
       />
+    </el-form-item>
+    <el-form-item
+      label="活動圖片"
+      prop=""
+      class="lg:col-span-6"
+    >
+      <el-upload
+        ref="uploadImageRef"
+        v-model:file-list="elementPlusPictureList"
+        class="w-full"
+        action="#"
+        multiple
+        list-type="picture"
+        :limit="5"
+        :on-exceed="handleExceed"
+        :on-change="handleChange"
+        :auto-upload="false"
+      >
+        <el-button
+          type="primary"
+          :disabled="elementPlusPictureList.length === 5"
+          round
+        >
+          {{
+            elementPlusPictureList.length === 5
+              ? "已達圖片上限"
+              : "選擇活動圖片"
+          }}
+        </el-button>
+        <template #tip>
+          <div class="el-upload__tip">最多五張</div>
+        </template>
+      </el-upload>
     </el-form-item>
     <el-form-item
       label="活動日期"
