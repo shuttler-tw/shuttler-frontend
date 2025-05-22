@@ -4,10 +4,15 @@
     ActivityDetail,
     CreateActivityPayload
   } from "@/types/activities";
+  import { useShuttlerLevelOptions } from "@/composables/useShuttlerLevelOptions";
+  import { useTwLocationState } from "@/composables/useTwLocationState";
+  import { venueFacilities as availableVenueFacilities } from "@/constants/venueFacilities";
 
   interface ActivityForm {
     activityEditInfo?: ActivityDetail;
   }
+
+  type ActivityAction = "save" | "publish" | "update";
 
   const props = defineProps<ActivityForm>();
 
@@ -56,6 +61,7 @@
     ],
     rentalLot: [{ required: true, message: "請輸入租用場地", trigger: "blur" }],
     points: [{ required: true, message: "請輸入活動點數", trigger: "blur" }],
+    level: [{ required: true, message: "請選擇活動程度", trigger: "change" }],
     venueName: [
       { required: true, message: "請輸入場館名稱", trigger: "blur" },
       {
@@ -101,6 +107,50 @@
     ]
   });
   const activityInfoFormRef = ref<FormInstance>();
+  const shuttlerLevelOptions = useShuttlerLevelOptions();
+  const {
+    twCitiesOptions,
+    twDistrictsOptions,
+    twCity,
+    twDistrict,
+    initLocationByZip
+  } = useTwLocationState();
+  initLocationByZip("110");
+
+  const processActivityAction = (action: ActivityAction) => {
+    switch (action) {
+      case "save":
+        // Save activity logic
+        break;
+      case "publish":
+        // Publish activity logic
+        break;
+      case "update":
+        // Update activity logic
+        break;
+    }
+  };
+
+  const submitForm = async (
+    formEl: FormInstance | undefined,
+    action: ActivityAction
+  ) => {
+    if (!formEl) return;
+    await formEl.validate(async (valid, _fields) => {
+      if (valid) {
+        await processActivityAction(action);
+        ElMessage({
+          message: "已成功提交",
+          type: "error"
+        });
+      } else {
+        ElMessage({
+          message: "提交資料有錯誤喔! 請檢查後再送出",
+          type: "error"
+        });
+      }
+    });
+  };
 
   onMounted(() => {
     if (activityEditInfo.value) {
@@ -241,6 +291,24 @@
       </el-input>
     </el-form-item>
     <el-form-item
+      label="活動程度"
+      prop="level"
+      class="lg:col-span-6"
+      required
+    >
+      <el-checkbox-group
+        v-model="activityInfo.level"
+        size="large"
+      >
+        <el-checkbox
+          v-for="levelOption in shuttlerLevelOptions"
+          :key="levelOption.value"
+          :label="levelOption.label"
+          :value="levelOption.value"
+        />
+      </el-checkbox-group>
+    </el-form-item>
+    <el-form-item
       label="活動簡介"
       prop="brief"
       class="lg:col-span-6"
@@ -253,6 +321,44 @@
         placeholder="請輸入活動簡介"
         :autosize="{ minRows: 3, maxRows: 5 }"
       />
+    </el-form-item>
+    <el-form-item
+      label="縣市"
+      prop=""
+      class="lg:col-span-3"
+      required
+    >
+      <el-select
+        v-model="twCity"
+        placeholder="請選擇縣市"
+        size="large"
+      >
+        <el-option
+          v-for="item in twCitiesOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+    <el-form-item
+      label="區域"
+      prop=""
+      class="lg:col-span-3"
+      required
+    >
+      <el-select
+        v-model="twDistrict"
+        placeholder="請選擇區域"
+        size="large"
+      >
+        <el-option
+          v-for="item in twDistrictsOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
     </el-form-item>
     <el-form-item
       label="場館名稱"
@@ -277,6 +383,24 @@
         size="large"
         placeholder="請輸入場館地址"
       />
+    </el-form-item>
+    <el-form-item
+      label="場館設施"
+      prop=""
+      class="lg:col-span-6"
+      required
+    >
+      <el-checkbox-group
+        v-model="activityInfo.venueFacilities"
+        size="large"
+      >
+        <el-checkbox
+          v-for="facilitity in availableVenueFacilities"
+          :key="facilitity"
+          :label="facilitity"
+          :value="facilitity"
+        />
+      </el-checkbox-group>
     </el-form-item>
     <el-form-item
       label="主辦單位"
@@ -323,6 +447,40 @@
         size="large"
         placeholder="請輸入聯絡人 Line"
       />
+    </el-form-item>
+    <el-form-item class="lg:col-span-6">
+      <template v-if="activityEditInfo?.activityId">
+        <el-button
+          type="primary"
+          size="large"
+          class="w-full"
+          round
+          @click="submitForm(activityInfoFormRef, 'update')"
+        >
+          更新
+        </el-button>
+      </template>
+      <template v-else>
+        <div class="flex w-full">
+          <el-button
+            size="large"
+            class="w-full mr-3 border-2 border-gray-300 text-gray-400"
+            round
+            @click="submitForm(activityInfoFormRef, 'save')"
+          >
+            儲存
+          </el-button>
+          <el-button
+            type="primary"
+            size="large"
+            class="w-full"
+            round
+            @click="submitForm(activityInfoFormRef, 'publish')"
+          >
+            發佈
+          </el-button>
+        </div>
+      </template>
     </el-form-item>
   </el-form>
 </template>
