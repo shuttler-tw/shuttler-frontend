@@ -7,6 +7,7 @@
   import { useShuttlerLevelOptions } from "@/composables/useShuttlerLevelOptions";
   import { useTwLocationState } from "@/composables/useTwLocationState";
   import { venueFacilities as availableVenueFacilities } from "@/constants/venueFacilities";
+  import { uploadImages } from "@/apis/upload";
 
   interface ActivityForm {
     activityEditInfo?: ActivityDetail;
@@ -15,7 +16,6 @@
   type ActivityAction = "save" | "publish" | "update";
 
   const props = defineProps<ActivityForm>();
-  const runtimeConfig = useRuntimeConfig();
 
   const activityEditInfo = computed(() => {
     return props.activityEditInfo;
@@ -116,7 +116,7 @@
     twDistrict,
     initLocationByZip
   } = useTwLocationState();
-  initLocationByZip("110");
+  const uploadImageFiles = ref<UploadFiles>([]);
 
   const processActivityAction = (action: ActivityAction) => {
     switch (action) {
@@ -132,36 +132,13 @@
     }
   };
 
-  const uploadImageFiles = ref<UploadFiles>([]);
-
   const handleChange = (uploadFiles: UploadFiles) => {
     uploadImageFiles.value = uploadFiles;
   };
 
   const handleUploadImages = async () => {
-    const formData = new FormData();
-    formData.append("uploadType", "activity");
-    uploadImageFiles.value.forEach((file) => {
-      if (file.raw) {
-        formData.append("file", file.raw);
-      }
-    });
-    const { data, error } = await useFetch<{
-      message: string;
-      data: { photo: string[] };
-    }>(`${runtimeConfig.public.API_BASE_URL}/upload-image`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${useCookie("token").value}`
-      }
-    });
-    if (error.value) {
-      ElMessage.error("圖片上傳失敗，請稍後再試");
-      return Promise.reject("圖片上傳失敗，請稍後再試");
-    }
-    if (data.value?.data.photo)
-      activityInfo.value.pictures = data.value?.data.photo;
+    const photo = await uploadImages(uploadImageFiles.value, "activity");
+    if (photo && photo.length > 0) activityInfo.value.pictures = [...photo];
   };
 
   const submitForm = async (
@@ -180,6 +157,7 @@
   };
 
   onMounted(() => {
+    initLocationByZip("110");
     if (activityEditInfo.value) {
       activityInfo.value = activityEditInfo.value;
     }

@@ -2,7 +2,6 @@
   import type {
     UploadProps,
     UploadUserFile,
-    UploadFiles,
     UploadInstance
   } from "element-plus";
 
@@ -55,7 +54,7 @@
       }}
     </el-button>
     <template #tip>
-      <div>最多五張圖片</div>
+      <p>最多五張圖片，格式為 JPG 或 PNG</p>
     </template>
   </el-upload>
 </template>
