@@ -12,7 +12,7 @@ export const uploadImages = async (
       formData.append("file", file.raw);
     }
   });
-  const { data, error } = useFetch<{
+  const { data, error } = await useFetch<{
     message: string;
     data: { photo: string[] };
   }>(`${runtimeConfig.public.API_BASE_URL}/upload-image`, {

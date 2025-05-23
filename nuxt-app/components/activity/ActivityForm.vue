@@ -7,6 +7,7 @@
   import { useShuttlerLevelOptions } from "@/composables/useShuttlerLevelOptions";
   import { useTwLocationState } from "@/composables/useTwLocationState";
   import { venueFacilities as availableVenueFacilities } from "@/constants/venueFacilities";
+  import { createActivity } from "@/apis/activity";
   import { uploadImages } from "@/apis/upload";
 
   interface ActivityForm {
@@ -23,7 +24,7 @@
   const activityInfo = ref<ActivityDetail | CreateActivityPayload>({
     name: "",
     pictures: [],
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     startTime: "",
     endTime: "",
     participantCount: 0,
@@ -40,8 +41,9 @@
     organizer: "",
     contactName: "",
     contactPhone: "",
-    contactLine: ""
-  });
+    contactLine: "",
+    status: ""
+  } as CreateActivityPayload);
   const activityInfoFormRules = ref<FormRules>({
     name: [
       { required: true, message: "請輸入名稱", trigger: "blur" },
@@ -118,12 +120,33 @@
   } = useTwLocationState();
   const uploadImageFiles = ref<UploadFiles>([]);
 
-  const processActivityAction = (action: ActivityAction) => {
+  const formatDateTimeToISOString = (date: string, time: string) => {
+    return `${date}T${time}:00Z`;
+  };
+
+  const formatPayloadData = (status: CreateActivityPayload["status"]) => {
+    const { date, startTime, endTime, ...rest } = activityInfo.value;
+    const formattedStartTime = formatDateTimeToISOString(date, startTime);
+    const formattedEndTime = formatDateTimeToISOString(date, endTime);
+    return {
+      ...rest,
+      date,
+      startTime: formattedStartTime,
+      endTime: formattedEndTime,
+      status,
+      city: twCity.value,
+      district: twDistrict.value
+    };
+  };
+
+  const processActivityAction = async (action: ActivityAction) => {
     switch (action) {
       case "save":
+        await createActivity(formatPayloadData("draft"));
         ElMessage.success("已成功儲存");
         break;
       case "publish":
+        await createActivity(formatPayloadData("published"));
         ElMessage.success("已成功提交");
         break;
       case "update":
@@ -204,6 +227,7 @@
         class="w-full"
         type="date"
         placeholder="請選擇日期"
+        value-format="YYYY-MM-DD"
       />
     </el-form-item>
     <el-form-item
@@ -215,11 +239,12 @@
       <el-time-select
         v-model="activityInfo.startTime"
         size="large"
-        start="04:00"
+        start="00:00"
         step="01:00"
         end="23:00"
         placeholder="請選擇開始時間"
         prefix-icon=""
+        :max-time="activityInfo.endTime"
       />
     </el-form-item>
     <el-form-item
@@ -231,11 +256,12 @@
       <el-time-select
         v-model="activityInfo.endTime"
         size="large"
-        start="04:00"
+        start="00:00"
         step="01:00"
         end="23:00"
         placeholder="請選擇結束時間"
         prefix-icon=""
+        :min-time="activityInfo.startTime"
       />
     </el-form-item>
     <el-form-item

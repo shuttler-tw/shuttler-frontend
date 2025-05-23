@@ -31,4 +31,6 @@ export interface ActivityDetail extends Activity {
 export type CreateActivityPayload = Omit<
   ActivityDetail,
   "activityId" | "isFav" | "contactAvatar" | "bookedCount"
->;
+> & {
+  status: "draft" | "published" | "";
+};
