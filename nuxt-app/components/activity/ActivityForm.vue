@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-  import type {
-    FormInstance,
-    FormRules,
-    UploadFiles
-  } from "element-plus";
+  import type { FormInstance, FormRules, UploadFiles } from "element-plus";
   import type {
     ActivityDetail,
     CreateActivityPayload
@@ -128,7 +124,6 @@
         ElMessage.success("已成功儲存");
         break;
       case "publish":
-        console.log(activityInfo.value);
         ElMessage.success("已成功提交");
         break;
       case "update":
@@ -138,7 +133,6 @@
   };
 
   const uploadImageFiles = ref<UploadFiles>([]);
-
 
   const handleChange = (uploadFiles: UploadFiles) => {
     uploadImageFiles.value = uploadFiles;
@@ -152,19 +146,23 @@
         formData.append("file", file.raw);
       }
     });
-    const { data, error } = await useFetch<{message: string, data: { photo: string[] }}>(`${runtimeConfig.public.API_BASE_URL}/upload-image`, {
+    const { data, error } = await useFetch<{
+      message: string;
+      data: { photo: string[] };
+    }>(`${runtimeConfig.public.API_BASE_URL}/upload-image`, {
       method: "POST",
       body: formData,
       headers: {
-        "Authorization": `Bearer ${useCookie("token").value}`
+        Authorization: `Bearer ${useCookie("token").value}`
       }
     });
     if (error.value) {
       ElMessage.error("圖片上傳失敗，請稍後再試");
       return Promise.reject("圖片上傳失敗，請稍後再試");
     }
-    if (data.value?.data.photo) activityInfo.value.pictures = data.value?.data.photo
-  }
+    if (data.value?.data.photo)
+      activityInfo.value.pictures = data.value?.data.photo;
+  };
 
   const submitForm = async (
     formEl: FormInstance | undefined,
@@ -214,7 +212,7 @@
       prop=""
       class="lg:col-span-6"
     >
-      <ActivityElUploadImage @onChange="handleChange" />
+      <ActivityElUploadImage @on-change="handleChange" />
     </el-form-item>
     <el-form-item
       label="活動日期"
