@@ -5,9 +5,9 @@
     UploadInstance
   } from "element-plus";
 
-  const emits = defineEmits(["onChange"]);
+  const emits = defineEmits(["onChange", "emitElUploadRef"]);
   const elementPlusPictureList = ref<UploadUserFile[]>([]);
-  const uploadImageRef = ref<UploadInstance>();
+  const uploadRef = ref<UploadInstance>();
 
   const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
     const type = rawFile.type;
@@ -28,11 +28,15 @@
   const handleChange: UploadProps["onChange"] = (_uploadFile, uploadFiles) => {
     emits("onChange", uploadFiles);
   };
+
+  onMounted(() => {
+    emits("emitElUploadRef", uploadRef.value);
+  });
 </script>
 
 <template>
   <el-upload
-    ref="uploadImageRef"
+    ref="uploadRef"
     v-model:file-list="elementPlusPictureList"
     class="w-full"
     action="#"

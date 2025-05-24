@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-  import type { FormInstance, FormRules, UploadFiles } from "element-plus";
+  import type {
+    FormInstance,
+    FormRules,
+    UploadFiles,
+    UploadInstance
+  } from "element-plus";
   import type {
     ActivityDetail,
     CreateActivityPayload
@@ -27,7 +32,7 @@
     date: new Date().toISOString().split("T")[0],
     startTime: "",
     endTime: "",
-    participantCount: 0,
+    participantCount: 1,
     rentalLot: 1,
     ballType: "",
     points: 0,
@@ -44,6 +49,42 @@
     contactLine: "",
     status: ""
   } as CreateActivityPayload);
+  const validatePhone = (
+    _rule: unknown,
+    value: string,
+    callback: (error?: Error) => void
+  ) => {
+    const phoneRegex = /^[0-9]+$/;
+    if (!value) {
+      callback(new Error("請輸入聯絡人電話"));
+    } else if (!phoneRegex.test(value)) {
+      callback(new Error("聯絡人電話格式不正確，請輸入數字"));
+    } else {
+      callback();
+    }
+  };
+  const validateGreaterThanZero = (
+    _rule: unknown,
+    value: number,
+    callback: (error?: Error) => void
+  ) => {
+    if (value <= 0) {
+      callback(new Error("數字必須大於 0"));
+    } else {
+      callback();
+    }
+  };
+  const validateLessThanZero = (
+    _rule: unknown,
+    value: number,
+    callback: (error?: Error) => void
+  ) => {
+    if (value < 0) {
+      callback(new Error("數字不能小於 0"));
+    } else {
+      callback();
+    }
+  };
   const activityInfoFormRules = ref<FormRules>({
     name: [
       { required: true, message: "請輸入名稱", trigger: "blur" },
@@ -60,10 +101,18 @@
     ],
     endTime: [{ required: true, message: "請選擇結束時間", trigger: "change" }],
     participantCount: [
-      { required: true, message: "請輸入活動名額", trigger: "blur" }
+      { required: true, message: "請輸入活動名額", trigger: "blur" },
+      { validator: validateGreaterThanZero, trigger: "blur" }
     ],
-    rentalLot: [{ required: true, message: "請輸入租用場地", trigger: "blur" }],
-    points: [{ required: true, message: "請輸入活動點數", trigger: "blur" }],
+    rentalLot: [
+      { required: true, message: "請輸入租用場地", trigger: "blur" },
+      { validator: validateGreaterThanZero, trigger: "blur" }
+    ],
+    ballType: [{ required: true, message: "請輸入使用球種", trigger: "blur" }],
+    points: [
+      { required: true, message: "請輸入活動點數", trigger: "blur" },
+      { validator: validateLessThanZero, trigger: "blur" }
+    ],
     level: [{ required: true, message: "請選擇活動程度", trigger: "change" }],
     venueName: [
       { required: true, message: "請輸入場館名稱", trigger: "blur" },
@@ -103,19 +152,21 @@
     ],
     contactPhone: [
       {
-        pattern: /^09\d{8}$/,
-        message: "請輸入正確的手機號碼",
+        required: true,
+        validator: validatePhone,
         trigger: "blur"
       }
     ]
   });
   const activityInfoFormRef = ref<FormInstance>();
+  const uploadImageRef = ref<UploadInstance>();
   const shuttlerLevelOptions = useShuttlerLevelOptions();
   const {
     twCitiesOptions,
     twDistrictsOptions,
     twCity,
     twDistrict,
+    twDistrictName,
     initLocationByZip
   } = useTwLocationState();
   const uploadImageFiles = ref<UploadFiles>([]);
@@ -135,24 +186,32 @@
       endTime: formattedEndTime,
       status,
       city: twCity.value,
-      district: twDistrict.value
+      district: twDistrictName.value
     };
   };
 
   const processActivityAction = async (action: ActivityAction) => {
-    switch (action) {
-      case "save":
-        await createActivity(formatPayloadData("draft"));
-        ElMessage.success("已成功儲存");
-        break;
-      case "publish":
-        await createActivity(formatPayloadData("published"));
-        ElMessage.success("已成功提交");
-        break;
-      case "update":
-        ElMessage.success("已成功修改");
-        break;
+    if (action === "save") {
+      const { error } = await createActivity(formatPayloadData("draft"));
+      if (error.value) return;
+      ElMessage.success("已成功儲存");
+      activityInfoFormRef.value?.resetFields();
+      clearUploadedFiles();
     }
+    if (action === "publish") {
+      const { error } = await createActivity(formatPayloadData("published"));
+      if (error.value) return;
+      ElMessage.success("已成功提交");
+      activityInfoFormRef.value?.resetFields();
+      clearUploadedFiles();
+    }
+    if (action === "update") {
+      ElMessage.success("已成功修改");
+    }
+  };
+
+  const handleElUploadRef = (elUploadRef: UploadInstance) => {
+    uploadImageRef.value = elUploadRef;
   };
 
   const handleChange = (uploadFiles: UploadFiles) => {
@@ -160,8 +219,7 @@
   };
 
   const handleUploadImages = async () => {
-    const photo = await uploadImages(uploadImageFiles.value, "activity");
-    if (photo && photo.length > 0) activityInfo.value.pictures = [...photo];
+    return await uploadImages(uploadImageFiles.value, "activity");
   };
 
   const submitForm = async (
@@ -171,7 +229,14 @@
     if (!formEl) return;
     await formEl.validate(async (valid, _fields) => {
       if (valid) {
-        if (uploadImageFiles.value.length > 0) await handleUploadImages();
+        if (uploadImageFiles.value.length > 0) {
+          const photo = await handleUploadImages();
+          if (photo && photo.length > 0) {
+            activityInfo.value.pictures = photo;
+          } else {
+            return;
+          }
+        }
         await processActivityAction(action);
       } else {
         ElMessage.error("提交資料有錯誤喔! 請檢查後再送出");
@@ -179,8 +244,13 @@
     });
   };
 
+  const clearUploadedFiles = () => {
+    uploadImageRef.value?.clearFiles();
+  };
+
   onMounted(() => {
-    initLocationByZip("110");
+    initLocationByZip("100");
+
     if (activityEditInfo.value) {
       activityInfo.value = activityEditInfo.value;
     }
@@ -213,7 +283,10 @@
       prop=""
       class="lg:col-span-6"
     >
-      <ActivityElUploadImage @on-change="handleChange" />
+      <ActivityElUploadImage
+        @on-change="handleChange"
+        @emit-el-upload-ref="handleElUploadRef"
+      />
     </el-form-item>
     <el-form-item
       label="活動日期"
@@ -275,7 +348,7 @@
         size="large"
         type="number"
         placeholder="請輸入活動名額"
-        min="0"
+        min="1"
       >
         <template #suffix>
           <span>人</span>
@@ -303,6 +376,7 @@
     <el-form-item
       label="使用球種"
       class="lg:col-span-6"
+      required
     >
       <el-input
         v-model="activityInfo.ballType"
@@ -467,6 +541,8 @@
     <el-form-item
       label="聯絡人電話"
       class="lg:col-span-6"
+      prop="contactPhone"
+      required
     >
       <el-input
         v-model="activityInfo.contactPhone"
@@ -504,7 +580,7 @@
             size="large"
             class="w-full mr-3 border-2 border-gray-300 text-gray-400"
             round
-            @click="handleUploadImages"
+            @click="submitForm(activityInfoFormRef, 'save')"
           >
             儲存
           </el-button>
